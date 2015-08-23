@@ -35,10 +35,14 @@ Scope.prototype.$$digestOnce = function() {
 };
 
 Scope.prototype.$digest = function() {
+	var ttl = 10;
 	var dirty;
 
 	do {
-		dirty = this.$$digestOnce;
+		dirty = this.$$digestOnce();
+		if (dirty && !(ttl--)) {
+			throw "10 iterations reached";
+		}
 	} while (dirty);
 };
 
