@@ -241,10 +241,29 @@ describe("Scope", function() {
 			var result = scope.$eval(function(scope, arg) {
 				return scope.aValue + arg;
 			}, 2);
-			
+
 			expect(result).toBe(44);
 		});
 
+		it("executes $apply-function and starts the digest", function() {
+			scope.aValue = 'someValue';
+			scope.counter = 0;
+
+			scope.$watch(
+				function (scope) {return scope.aValue;},
+				function (newValue, oldValue, scope) {
+					return scope.counter++;
+				}
+			);
+
+			scope.$digest();
+			expect(scope.counter).toBe(1);
+
+			scope.$apply(function(scope) {
+				scope.aValue = 'SomeOtherValue';
+			});
+			expect(scope.counter).toBe(2);
+		});
 
 	});
 });
